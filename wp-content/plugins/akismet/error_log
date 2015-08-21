@@ -1,0 +1,6 @@
+[13-May-2014 21:29:32 Europe/London] PHP Fatal error:  Call to undefined function plugin_dir_url() in /home/fyberopt/public_html/pulsecoaching/wp-content/plugins/akismet/akismet.php on line 32
+[14-May-2014 09:28:11 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/public_html/pulsecoaching/wp-content/plugins/akismet/legacy.php on line 356
+[13-Jan-2015 07:40:18 Europe/London] PHP Fatal error:  Call to undefined function plugin_dir_url() in /home/fyberopt/public_html/pulsecoaching/wp-content/plugins/akismet/akismet.php on line 32
+[31-Jan-2015 01:50:34 Europe/London] PHP Fatal error:  Call to undefined function plugin_dir_url() in /home/fyberopt/public_html/pulsecoaching/wp-content/plugins/akismet/akismet.php on line 32
+[21-Jun-2015 11:14:41 Europe/London] PHP Fatal error:  Call to undefined function plugin_dir_url() in /home/fyberopt/pulsecoaching/wp-content/plugins/akismet/akismet.php on line 32
+[22-Jul-2015 14:24:05 Europe/London] PHP Fatal error:  Call to undefined function plugin_dir_url() in /home/fyberopt/pulsecoaching/wp-content/plugins/akismet/akismet.php on line 32

@@ -1,0 +1,2 @@
+[01-Jun-2014 14:11:59 Europe/London] PHP Fatal error:  Call to undefined function get_header() in /home/fyberopt/public_html/pulsecoaching/wp-content/themes/twentyten/search.php on line 10
+[15-Jul-2015 00:34:30 Europe/London] PHP Fatal error:  Call to undefined function get_header() in /home/fyberopt/pulsecoaching/wp-content/themes/twentyten/404.php on line 10

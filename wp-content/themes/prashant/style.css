@@ -1,0 +1,351 @@
+/*
+Theme Name: Starkers
+Theme URI: http://elliotjaystocks.com
+Description: The totally nude Wordpress theme. Phwoar! (Based on Twenty Ten)
+Version: 3.0
+Author: Elliot Jay Stocks
+Author URI: http://elliotjaystocks.com
+Tags: starkers, naked, clean, basic
+*/
+
+@import "css/reset.css";
+@import "css/typography.css";
+@import "css/layout.css";
+
+a:link, a:visited {
+	color:#505050;
+	text-decoration : none;
+}
+
+/* Classes */
+.floatRight {float:right;}
+.floatLeft {float:left;}
+.marginLeft {margin-left:10px;}
+
+h1{text-shadow: 1px 1px 1px #f1f1f1;font-family:;font-size:3em;color:#505050;line-height:1.5em;font-weight:100;margin-top:15px;}
+h2{text-shadow: 1px 1px 1px #f1f1f1;font-size:2em;color:#505050;line-height:1.4em;font-weight:100;margin-top:8px;}
+h3{text-shadow: 1px 1px 1px #f1f1f1;font-size:1.3em;color:#505050;font-weight:100;}
+h4{text-shadow: 1px 1px 1px #f1f1f1;font-size:1em;color:#000;}
+
+p{color:#2F2F2F;line-height:1.8em;font-size:1em;margin-bottom:20px;margin-top:20px;}
+q{font-size:1.2em;color:#808080;font-style:italic;}
+
+
+a{font-weight:bold;}
+a:hover{text-decoration:underline;}
+li {list-style-type: circle;position:relative;left:30px;}
+
+.margin {margin-top:30px;margin-bottom:30px;}
+.margin20 {margin-top:20px;margin-bottom:20px;}
+
+.break{background:#c9c9c9; height:10px; width:100%; clear:both;margin-top:10px;margin-bottom:10px;}
+.breakLite{background:#EEEEEE; height:10px; width:100%; clear:both;margin-top:0px;margin-bottom:10px;}
+.breakLink{background:#EEEEEE; height:10px; width:100%; clear:both;}
+.breakHR{background:#c9c9c9; height:1px; width:100%; margin-top:10px;margin-bottom:10px;clear:both;}
+.breakTan{background:#FF6000; height:10px; width:100%; clear:both; margin-top:10px;margin-bottom:10px;}
+
+#content{
+	background-image:url('images/contentNoise.jpg');padding-bottom:20px;
+	margin-bottom:20px;
+  	-moz-box-shadow: 0px 10px 15px #c9c9c9;
+  	-webkit-box-shadow: 0px 10px 20px #c9c9c9;
+  	box-shadow: 0px 10px 20px #c9c9c9;
+	border-bottom-right-radius: 15px 15px;
+	border-bottom-left-radius: 15px 15px;
+
+}
+
+#logo{background-image:url('images/logo-Pulse.png');width:440px;height:120px;background-repeat:no-repeat;}
+
+#sideBar {}
+#rightCol{background-color:#EEEEEE;position:relative;left:10px;width:219px; min-height:350px; border-left:#c9c9c9 solid 1px}
+#rightCol h2, #rightCol h3 {margin:10px;}
+#rightCol p {color:#4d4d4d;margin:15px;margin-bottom:15px;text-shadow: 1px 1px 1px #f1f1f1;}
+#rightCol b, #rightCol p {padding-top:10px;margin-bottom:5px;}
+#social a {display:inline;margin-right;float:left;}
+#searchform input{margin-left:10px;}
+
+#comments-title{padding-top:20px;padding-bottom:20px;}
+#respond {clear:both;padding:20px;padding-bottom:40px;margin-top:30px;margin-bottom:30px; border-bottom:#c9c9c9 solid 1px;border-top:#c9c9c9 solid 1px; background-color:#f8f8f8;}
+#comment {float:right;}
+#commentOL li {list-style-type:none; width:550px;background-color:#f9f9f9; padding:20px; margin-bottom:2px;}
+.comment-meta {margin-top:10px;margin-bottom:10px; font-size:12px;}
+.form-allowed-tags {clear:both; display:none;}
+.avatar {margin-right:10px;}
+
+#3col{background-color:;float:left;}
+#personal {background-image:url('images/personal.jpg');height:80px;width:300px;}
+#school {background-image:url('images/schoolHands.jpg');height:80px;width:300px;}
+#corporate {background-image:url('images/corporate.jpg');height:80px;width:300px;}
+
+/* Blog */
+#listPost{margin-bottom:50px;}
+#nextprev{padding-top:10px;}	
+	
+	
+#openQuote {background-image:url(images/quote.gif);height:44px; width:50px;float:left; margin-left:7px;margin-right:0px;}
+#closeQuote {background-image:url(images/quote.gif);height:44px; background-repeat:no-repeat; width:50px;float:right; padding-bottom:20px;margin-left:7px;margin-right:7px;position:relative;top:15px;
+	filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=3);
+	-webkit-transform: rotate(-180deg); 
+	-moz-transform: rotate(-180deg);
+	display:inline;
+	}
+
+
+#prashProfile {background-image:url(images/prashant.jpg);height:200px;width:160px;background-repeat:no-repeat; margin-right:40px; }
+#quote p i{font-size:1.5em;}
+
+#yasminProfile {background-image:url(images/prashant.jpeg);height:300px;width:220;}
+
+.entry-date {
+	color:#262626;
+	font-style:italic;
+}
+.meta-prep {
+	font-style:bold;
+	color:#262626;
+}
+.meta-prep-author a{
+	font-style:bold;
+	color:#262626;
+	
+}
+
+/* Nav */
+li.current_page_item a{
+	padding-bottom:11px;
+   border-bottom:solid 10px #FF6000;
+height:10px;
+width:10px;
+
+}
+.menu a {
+	font-family:Trebuchet, Helvetica, sans-serif;
+	font-weight:normal;
+	color:#494949;
+	position:relative;top:4px;
+	padding-left:30px;
+	padding-right:30px;
+	}
+
+.menu {
+	background-color:;	
+}
+
+.menu li{
+	border-right:solid 1px #ffffff;
+	border-left:solid 1px #c9c9c9;
+	padding-left:1px;
+	padding-right:1px;
+	float:left;
+	list-style-type: none;
+
+	padding-bottom:5px;
+	margin-bottom:10px;
+	margin-top:2px;
+}
+.menu li:first-child;{
+	border-right:solid 1px #ffffff;
+	background-color:#ccc;
+	}
+
+.menu li:hover;{
+	background-color:#fff;
+	
+}
+
+* {
+margin : 0;
+padding : 0;
+}
+html {
+height : 100%;
+}
+header {
+	background-color:#F7F7F7;
+}
+
+body {
+	background-color : #f7f7f7;
+	background-repeat : no-repeat;
+}
+
+a img {
+border : 0;
+}
+div.wrap {
+width : 993px;
+margin : 0 auto;
+text-align : left;
+}
+div#top div#nav {
+float : left;
+clear : both;
+width : 993px;
+height : 52px;
+margin : 22px 0 0;
+}
+div#top div#nav ul {
+float : left;
+width : 700px;
+height : 52px;
+list-style-type : none;
+}
+div#nav ul li {
+float : left;
+height : 52px;
+}
+div#nav ul li a {
+border : 0;
+height : 52px;
+display : block;
+line-height : 52px;
+text-indent : -9999px;
+}
+div#header {
+margin : -1px 0 0;
+}
+div#video-header {
+height : 683px;
+margin : -1px 0 0;
+}
+div#header div.wrap {
+height : 299px;
+/*background : url(images/header-bg.png) no-repeat 50% 0;*/
+}
+div#header div#slide-holder {
+z-index : 40;
+width : 993px;
+height : 299px;
+position : absolute;
+}
+div#header div#slide-holder div#slide-runner {
+top : 0px;
+left : 0px;
+width : 960px;
+height : 278px;
+overflow : hidden;
+position : absolute;
+}
+div#header div#slide-holder img {
+margin : 0;
+display : none;
+position : absolute;
+}
+div#header div#slide-holder div#slide-controls {
+left : 0;
+bottom : 228px;
+width : 973px;
+height : 46px;
+display : none;
+position : absolute;
+/*background : url(images/slide-bg.png) 0 0;*/
+}
+
+
+/* Title Text in slider */
+div#header div#slide-holder div#slide-controls p.text {
+
+}
+div#header div#slide-holder div#slide-controls p#slide-nav {
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a {
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a.on {
+background-position : 0 -24px;
+}
+div#header div#slide-holder div#slide-controls p#slide-nav a {
+/*background-image : url(images/silde-nav.png);*/
+}
+div#nav ul li a {
+/*background : url(images/nav.png) no-repeat;*/
+}
+
+#slide1Right{border-left:1px #636363 solid;margin-left:30px;}
+#slide1 h1 {margin-left:30px;margin-top:0px;color:#636363;}
+#slide2 {background:url('images/slide1.png');
+height:300px;width:960px;}
+#slide3 {background:url('images/slide2.png');
+height:300px;width:960px;}
+#slide4 {background:url('images/slide3.png');
+height:300px;width:960px;}
+
+#slidebox{position:relative;border:0px solid #ccc; margin:0px auto;*/}
+#slidebox, #slidebox .content{width:960px;}
+#slidebox, #slidebox .container, #slidebox .content{height:320px;}
+#slidebox{overflow:hidden;}
+#slidebox .container{position:relative; left:0;}
+#slidebox .content{float:left;}
+#slidebox .content div{padding:0px 0px; height:100%; font-family:Verdana, Geneva, sans-serif; font-size:13px;}
+#slidebox .next, #slidebox .previous{position:absolute; z-index:2; display:block; width:21px; height:21px;}
+#slidebox .next{right:0; margin-right:10px; background:url(images/slidebox_next.png) no-repeat left top;}
+#slidebox .next:hover{background:url(images/slidebox_next_hover.png) no-repeat left top;}
+#slidebox .previous{margin-left:10px; background:url(images/slidebox_previous.png) no-repeat left top;}
+#slidebox .previous:hover{background:url(images/slidebox_previous_hover.png) no-repeat left top;}
+#slidebox .thumbs{position:absolute; z-index:2; bottom:10px; right:10px;}
+#slidebox .thumbs .thumb{margin-left:5px; float:left; font-family:Verdana, Geneva, sans-serif; font-size:9px; text-decoration:none; padding:2px 4px; background:url(images/slidebox_thumb.png); color:#fff;}
+#slidebox .thumbs .thumb:hover{color:#000;}
+#slidebox .selected_thumb{background:#fff; color:#000; display:block; margin-left:5px; float:left; font-family:Verdana, Geneva, sans-serif; font-size:9px; text-decoration:none; padding:2px 4px;}
+
+/* Tabbed Nav */
+UL.tabNavigation {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+UL.tabNavigation LI {
+    display: inline;
+
+}
+
+UL.tabNavigation LI A {
+    border-top:solid 2px #c9c9c9;
+	padding: 8px 10px 3px 15px;
+	margin: 0px 15px 0px 0px;
+    background-color: #f1f1f1;
+    color: #000;
+    text-decoration: none;
+
+}
+
+UL.tabNavigation LI A.selected{	
+	background-color: #f8f8f8;
+	padding: 8px 10px 5px 15px;
+	
+	}
+UL.tabNavigation LI A:hover {
+    background-color: #e1e1e1;
+    color: #000000;
+    padding-top: 7px;
+}
+
+UL.tabNavigation LI A:focus {
+        outline: 0;
+}
+
+div.tabs > div {
+        padding: 5px;
+        margin-top: 3px;
+        border-top: 1px solid #c9c9c9;
+}
+
+div.tabs > div h2 {
+        margin-top: 0;
+}
+
+#first {
+    background-color: #f8f8f8;
+}
+
+#second {
+    background-color: #f8f8f8;
+}
+
+#third {
+    background-color: #f8f8f8;
+}
+
+.waste {
+        min-height: 1000px;
+}

@@ -1,0 +1,9 @@
+[12-May-2014 09:56:39 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/public_html/pulsecoaching/wp-content/plugins/hello.php on line 60
+[06-May-2015 07:46:41 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[12-May-2015 13:12:04 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[13-May-2015 09:49:53 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[31-May-2015 07:41:43 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[30-Jun-2015 12:21:59 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[17-Jul-2015 13:03:52 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[27-Jul-2015 09:22:13 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
+[19-Aug-2015 14:12:14 Europe/London] PHP Fatal error:  Call to undefined function add_action() in /home/fyberopt/pulsecoaching/wp-content/plugins/hello.php on line 60
