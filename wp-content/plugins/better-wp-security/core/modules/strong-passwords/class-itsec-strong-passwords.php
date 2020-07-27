@@ -1,170 +1,232 @@
 <?php
 
-class ITSEC_Strong_Passwords {
+use iThemesSecurity\Contracts\Runnable;
+use iThemesSecurity\User_Groups;
 
-	private
-		$settings,
-		$module_path;
+final class ITSEC_Strong_Passwords implements Runnable {
 
-	function run() {
+	const STRENGTH_KEY = 'itsec-password-strength';
 
-		$this->settings    = get_site_option( 'itsec_strong_passwords' );
-		$this->module_path = ITSEC_Lib::get_module_path( __FILE__ );
+	/** @var User_Groups\Matcher */
+	private $matcher;
 
-		//require strong passwords if turned on
-		if ( isset( $this->settings['enabled'] ) && $this->settings['enabled'] === true ) {
+	/**
+	 * ITSEC_Strong_Passwords constructor.
+	 *
+	 * @param User_Groups\Matcher $matcher
+	 */
+	public function __construct( User_Groups\Matcher $matcher ) {
+		$this->matcher = $matcher;
+	}
 
-			add_action( 'user_profile_update_errors', array( $this, 'enforce_strong_password' ), 0, 3 );
-			add_action( 'validate_password_reset', array( $this, 'enforce_strong_password' ), 10, 2 );
-
-			if ( isset( $_GET['action'] ) && ( $_GET['action'] == 'rp' || $_GET['action'] == 'resetpass' ) && isset( $_GET['login'] ) ) {
-				add_action( 'login_head', array( $this, 'enforce_strong_password' ) );
-			}
-
-			add_action( 'admin_enqueue_scripts', array( $this, 'login_script_js' ) );
-			add_action( 'login_enqueue_scripts', array( $this, 'login_script_js' ) );
-
-		}
-
+	public function run() {
+		add_action( 'itsec_register_password_requirements', array( $this, 'register_requirements' ) );
+		add_action( 'itsec_register_user_group_settings', [ $this, 'register_group_setting' ] );
+		add_action( 'admin_enqueue_scripts', array( $this, 'add_scripts' ) );
+		add_action( 'resetpass_form', array( $this, 'add_scripts_to_wp_login' ) );
+		add_action( 'itsec_password_requirements_change_form', array( $this, 'add_scripts_to_wp_login' ) );
 	}
 
 	/**
-	 * Require strong passwords
-	 *
-	 * Requires new passwords set are strong passwords
-	 *
-	 * @param object $errors WordPress errors
-	 *
-	 * @return object WordPress error object
-	 *
-	 **/
-	function enforce_strong_password( $errors ) {
+	 * Register the Strong Passwords requirement.
+	 */
+	public function register_requirements() {
+		ITSEC_Lib_Password_Requirements::register( 'strength', array(
+			'evaluate'                => array( $this, 'evaluate' ),
+			'validate'                => array( $this, 'validate' ),
+			'reason'                  => array( $this, 'reason' ),
+			'meta'                    => self::STRENGTH_KEY,
+			'evaluate_if_not_enabled' => true,
+			'defaults'                => array(
+				'group' => ITSEC_Modules::get_settings_obj( 'user-groups' )->get_groups_for_all_users(),
+			),
+			'settings_config'         => array( $this, 'get_settings_config' ),
+		) );
+	}
 
-		//determine the minimum role for enforcement
-		$min_role = isset( $this->settings['roll'] ) ? $this->settings['roll'] : 'administrator';
-
-		//all the standard roles and level equivalents
-		$available_roles = array(
-			'administrator' => '8',
-			'editor'        => '5',
-			'author'        => '2',
-			'contributor'   => '1',
-			'subscriber'    => '0'
-		);
-
-		//roles and subroles
-		$rollists = array(
-			'administrator' => array( 'subscriber', 'author', 'contributor', 'editor' ),
-			'editor'        => array( 'subscriber', 'author', 'contributor' ),
-			'author'        => array( 'subscriber', 'contributor' ),
-			'contributor'   => array( 'subscriber' ),
-			'subscriber'    => array(),
-		);
-
-		$password_meets_requirements = false;
-		$args                        = func_get_args();
-		$user_id                     = isset( $args[2]->user_login ) ? $args[2]->user_login : false;
-
-		if ( $user_id === false ) { //try to get a working user ID
-
-			if ( isset( $args[1] ) && isset( $args[1]->ID ) ) {
-
-				if ( isset( $args[1]->user_login ) ) {
-
-					$user_id = $args[1]->user_login;
-
-				} else {
-
-					$user_id = $args[1]->get( 'user_login' );
-				}
-
-			}
-
+	public function register_group_setting( User_Groups\Settings_Registry $registry ) {
+		if ( ITSEC_Lib_Password_Requirements::is_requirement_enabled( 'strength' ) ) {
+			$registry->register( new User_Groups\Settings_Registration( 'password-requirements', 'requirement_settings.strength.group', User_Groups\Settings_Registration::T_MULTIPLE, static function () {
+				return [
+					'title'       => __( 'Require Strong Passwords', 'better-wp-security' ),
+					'description' => __( 'Force users in the group to use strong passwords.', 'better-wp-security' ),
+				];
+			} ) );
 		}
-
-		if ( $user_id ) { //if updating an existing user
-
-			if ( $user_info = get_user_by( 'login', $user_id ) ) {
-
-				foreach ( $user_info->roles as $capability ) {
-
-					if ( isset( $available_roles[ $capability ] ) && $available_roles[ $capability ] >= $available_roles[ $min_role ] ) {
-						$password_meets_requirements = true;
-					}
-
-				}
-
-			} else { //a new user
-
-				if ( ! empty( $_POST['role'] ) && ! in_array( $_POST["role"], $rollists[ $min_role ] ) ) {
-					$password_meets_requirements = true;
-				}
-
-			}
-
-		}
-
-		if ( $password_meets_requirements === true ) {
-
-			add_action( 'shutdown', array( $this, 'shut_down_js' ) );
-
-		}
-
-		if ( ! isset( $_GET['action'] ) ) {
-
-			//add to error array if the password does not meet requirements
-			if ( $password_meets_requirements && ! $errors->get_error_data( 'pass' ) && isset( $_POST['pass1'] ) && trim( strlen( $_POST['pass1'] ) ) > 0 && isset( $_POST['password_strength'] ) && $_POST['password_strength'] != 'strong' ) {
-				$errors->add( 'pass', __( '<strong>ERROR</strong>: You MUST Choose a password that rates at least <em>Strong</em> on the meter. Your setting have NOT been saved.', 'it-l10n-better-wp-security' ) );
-			}
-
-		}
-
-		return $errors;
 	}
 
 	/**
-	 * Enqueue script to check password strength
+	 * Enqueue script to hide the acknowledge weak password checkbox.
 	 *
 	 * @return void
 	 */
-	public function login_script_js() {
+	public function add_scripts() {
+		global $pagenow;
 
-		global $itsec_globals;
-
-		if ( $this->settings['enabled'] === true ) {
-
-			wp_enqueue_script( 'itsec_strong_passwords', $this->module_path . 'js/strong-passwords.js', array( 'jquery' ), $itsec_globals['plugin_build'] );
-
-			//make sure the text of the warning is translatable
-			wp_localize_script( 'itsec_strong_passwords', 'strong_password_error_text', array( 'text' => __( 'Sorry, but you must enter a strong password.', 'it-l10n-better-wp-security' ) ) );
-
+		if ( 'profile.php' !== $pagenow ) {
+			return;
 		}
 
+		if ( ! ITSEC_Lib_Password_Requirements::is_requirement_enabled( 'strength' ) ) {
+			return;
+		}
+
+		$settings = ITSEC_Lib_Password_Requirements::get_requirement_settings( 'strength' );
+
+		if ( $this->matcher->matches( User_Groups\Match_Target::for_user( wp_get_current_user() ), $settings['group'] ) ) {
+			wp_enqueue_script( 'itsec_strong_passwords', plugins_url( 'js/script.js', __FILE__ ), array( 'jquery' ), ITSEC_Core::get_plugin_build() );
+		}
 	}
 
 	/**
-	 * Ad js for reset password page
+	 * On the reset password and login interstitial form, render the Strong Passwords JS to hide the acknowledge weak password checkbox.
 	 *
-	 * @since 4.0.10
+	 * We have to do this in these late actions so we have access to the correct user data.
 	 *
-	 * @return void
+	 * @param WP_User $user
 	 */
-	public function shut_down_js() {
+	public function add_scripts_to_wp_login( $user ) {
 
+		if ( ! ITSEC_Lib_Password_Requirements::is_requirement_enabled( 'strength' ) ) {
+			return;
+		}
+
+		$settings = ITSEC_Lib_Password_Requirements::get_requirement_settings( 'strength' );
+
+		if ( $this->matcher->matches( User_Groups\Match_Target::for_user( $user ), $settings['group'] ) ) {
+			wp_enqueue_script( 'itsec_strong_passwords', plugins_url( 'js/script.js', __FILE__ ), array( 'jquery' ), ITSEC_Core::get_plugin_build() );
+		}
+	}
+
+	/**
+	 * Provide the reason string displayed to users on the change password form.
+	 *
+	 * @param $evaluation
+	 *
+	 * @return string
+	 */
+	public function reason( $evaluation ) {
+		return esc_html__( 'Due to site rules, a strong password is required for your account. Please choose a new password that rates as strong on the meter.', 'better-wp-security' );
+	}
+
+	/**
+	 * Evaluate the strength of a password.
+	 *
+	 * @param string  $password
+	 * @param WP_User $user
+	 *
+	 * @return int
+	 */
+	public function evaluate( $password, $user ) {
+		return $this->get_password_strength( $user, $password );
+	}
+
+	/**
+	 * Validate whether a password strength is acceptable for a given user.
+	 *
+	 * @param int              $strength
+	 * @param WP_User|stdClass $user
+	 * @param array            $settings
+	 * @param array            $args
+	 *
+	 * @return bool
+	 */
+	public function validate( $strength, $user, $settings, $args ) {
+		if ( (int) $strength === 4 ) {
+			return true;
+		}
+
+		if ( ! $user = get_userdata( $user->ID ) ) {
+			return true;
+		}
+
+		$target = isset( $args['target'] ) ? $args['target'] : User_Groups\Match_Target::for_user( $user );
+
+		if ( ! $this->matcher->matches( $target, $settings['group'] ) ) {
+			return true;
+		}
+
+		return $this->make_error_message();
+	}
+
+	public function get_settings_config() {
+		return array(
+			'label'       => esc_html__( 'Strong Passwords', 'better-wp-security' ),
+			'description' => esc_html__( 'Force users to use strong passwords as rated by the WordPress password meter.', 'better-wp-security' ),
+			'render'      => array( $this, 'render_settings' ),
+			'sanitize'    => array( $this, 'sanitize_settings' ),
+		);
+	}
+
+	/**
+	 * Render the Settings Page.
+	 *
+	 * @param ITSEC_Form $form
+	 */
+	public function render_settings( $form ) {
 		?>
-
-		<script type="text/javascript">
-			jQuery( document ).ready( function () {
-				jQuery( '#resetpassform' ).submit( function () {
-					if ( ! jQuery( '#pass-strength-result' ).hasClass( 'strong' ) ) {
-						alert( '<?php _e( "Sorry, but you must enter a strong password", "ithemes-security" ); ?>' );
-						return false;
-					}
-				} );
-			} );
-		</script>
-
-	<?php
+		<tr>
+			<th scope="row">
+				<label for="itsec-password-requirements-requirement_settings-strength-group">
+					<?php esc_html_e( 'User Group', 'better-wp-security' ); ?>
+				</label>
+			</th>
+			<td>
+				<?php $form->add_user_groups( 'group', 'password-requirements', 'requirement_settings.strength.group' ); ?>
+				<br/>
+				<label for="itsec-password-requirements-requirement_settings-strength-group"><?php _e( 'Force users in the selected groups to use strong passwords.', 'better-wp-security' ); ?></label>
+			</td>
+		</tr>
+		<?php
 	}
 
+	/**
+	 * Get a list of the sanitizer rules to apply.
+	 *
+	 * @param array $settings
+	 *
+	 * @return array
+	 */
+	public function sanitize_settings( $settings ) {
+		return array(
+			array( 'user-groups', 'group', esc_html__( 'User Groups for Strong Passwords', 'better-wp-security' ) ),
+		);
+	}
+
+	/**
+	 * Get the strong password error message according to the given context.
+	 *
+	 * @return string
+	 */
+	private function make_error_message() {
+		$message = __( '<strong>Error</strong>: Due to site rules, a strong password is required. Please choose a new password that rates as <strong>Strong</strong> on the meter.', 'better-wp-security' );
+
+		return wp_kses( $message, array( 'strong' => array() ) );
+	}
+
+	/**
+	 * Calculate the strength of a password.
+	 *
+	 * @param WP_User $user
+	 * @param string  $password
+	 *
+	 * @return int
+	 */
+	private function get_password_strength( $user, $password ) {
+
+		$penalty_strings = array(
+			get_site_option( 'admin_email' )
+		);
+		$user_properties = array( 'user_login', 'first_name', 'last_name', 'nickname', 'display_name', 'user_email', 'user_url', 'description' );
+
+		foreach ( $user_properties as $user_property ) {
+			if ( isset( $user->$user_property ) ) {
+				$penalty_strings[] = $user->$user_property;
+			}
+		}
+
+		$results = ITSEC_Lib::get_password_strength_results( $password, $penalty_strings );
+
+		return $results->score;
+	}
 }
